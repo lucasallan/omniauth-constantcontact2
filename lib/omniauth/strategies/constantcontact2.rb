@@ -17,6 +17,10 @@ module OmniAuth
           :token_url => '/oauth2/oauth/token'
       }
 
+      option :authorize_options, [
+        :state
+      ]
+
       def request_phase
         req = Rack::Request.new(@env)
         options.update(req.params)
