@@ -5,10 +5,10 @@ require 'multi_xml'
 module OmniAuth
   module Strategies
     class ConstantContact2 < OmniAuth::Strategies::OAuth2
-      
+
       DEFAULT_RESPONSE_TYPE = 'code'
       DEFAULT_GRANT = 'authorization_code'
-      
+
       option :name, "constantcontact"
 
       option :client_options, {
@@ -16,6 +16,13 @@ module OmniAuth
           :authorize_url => '/oauth2/oauth/siteowner/authorize',
           :token_url => '/oauth2/oauth/token'
       }
+
+      def request_phase
+        req = Rack::Request.new(@env)
+        options.update(req.params)
+        super
+      end
+
 
       def authorize_params
         super.tap do |params|
@@ -42,7 +49,7 @@ module OmniAuth
           {
               :email_entries => entries.map{|x|x["content"]["Email"]["EmailAddress"]}
           }
-        else 
+        else
           {
               :email => entries["content"]["Email"]["EmailAddress"]
           }
